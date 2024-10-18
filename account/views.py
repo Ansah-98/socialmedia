@@ -5,7 +5,8 @@ from .models import Profile
 from .forms import LoginForm
 from django.contrib.auth import login, authenticate ,logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreationForms
+from .forms import UserCreationForms,UserEdit,ProfileEdit
+
 
 def login_user(request):
     if request.method == 'POST':
@@ -48,3 +49,19 @@ def logout_user(request):
 @login_required
 def dashboard(request):
     return render(request,'account/dashboard.html',{'section':'dashboard'})
+@login_required
+def edit(request):
+    if request.method =='POST':
+        user_form = UserEdit(instance=request.user,
+                             data=request.POST)
+        profile_form = ProfileEdit(instance = request.user.profile,
+                               data  = request.POST,
+                               files = request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+    else:
+        user_form = UserEdit(instance=request.user)
+        profile_form = ProfileEdit(instance = request.user.profile)
+    return render(request,'account/edit.html',{'userform':user_form,
+                                                      'profile_form':profile_form})

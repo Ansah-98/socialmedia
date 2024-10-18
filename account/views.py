@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-
+from .models import Profile
 # Create your views here.
 from .forms import LoginForm
 from django.contrib.auth import login, authenticate ,logout
@@ -32,7 +32,10 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            return render('account/register_done.html')
+            user  = new_user
+            Profile.objects.create(user = user)
+
+            return render('account/register_done.html',{'user':user})
     user_form = UserCreationForms()
     return render(request,'account/register.html',{'form':user_form})
 

@@ -1,5 +1,5 @@
 {%extends 'base.html'%}
 {%block content%}
-<h1>Thank you for joining us</h1>
+<h1>Thank you for joining us {{user.first_name}}</h1>
 <p>Your account has been created please <a href="{%url 'login'%}">login</a>here</p>
 {%endblock content%}

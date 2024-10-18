@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 
 # Create your views here.
 from .forms import LoginForm
-from django.contrib.auth import login, authenticate 
+from django.contrib.auth import login, authenticate ,logout
 from django.contrib.auth.decorators import login_required
-
+from .forms import UserCreationForms
 
 def login_user(request):
     if request.method == 'POST':
@@ -17,13 +17,29 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponse('Authenticated successfully')
+                    return redirect(dashboard)
                 else:
                     return HttpResponse('User has been deactivated')
         return HttpResponse('Invalid login')
     else:
         form = LoginForm()
     return render(request,'account/login.html',{'form':form})
+
+def register(request):
+    if request.method =='POST':
+        user_form = UserCreationForms(request.post)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return render('account/register_done.html')
+    user_form = UserCreationForms()
+    return render(request,'account/register.html',{'form':user_form})
+
+@login_required
+def logout_user(request):
+    logout(request)
+    return redirect(login_user)
 
 
 @login_required

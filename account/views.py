@@ -62,9 +62,11 @@ def edit(request):
             user_form.save()
             profile_form.save()
             messages.success(request,'Profile has been updated successfully')
+        else:
+            messages.error(request,'Error updating your profile')
     else:
-        user_form = UserEdit(instance=request.user)
+        user_form = UserEdit(instance = request.user)
         profile_form = ProfileEdit(instance = request.user.profile)
-        messages.error(request,'Error updating your profile')
-    return render(request,'account/edit.html',{'userform':user_form,
+        
+    return render(request,'account/edit.html',{'user_form':user_form,
                                                       'profile_form':profile_form})

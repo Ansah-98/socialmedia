@@ -32,7 +32,7 @@ class UserCreationForms(ModelForm):
 class UserEdit(ModelForm):
     class Meta:
         model = get_user_model()
-        fields = ['first_name','last_name','email']
+        fields = ['username','first_name','last_name','email']
     def clean_email(self):
         data = self.cleaned_data['email']
         qs = User.objects.exclude(id =self.instance.id).filter(email = data)
